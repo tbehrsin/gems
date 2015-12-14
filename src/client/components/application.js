@@ -171,11 +171,11 @@ export default class Application {
       else this.score += evt.group.length * 31 * this.multiplier;
 
       if(this.score >= 100000) {
-        let slot = (Math.log10(this.score) | 0).toString();
+        let slot = ((this.score / 100000) | 0).toString();
         if (!this.scoreEvents[slot]) {
           this.scoreEvents[slot] = true;
           setTimeout(function() {
-            _gs('event', 'Scored ' + Math.pow(10, slot));
+            _gs('event', 'Scored ' + slot * 100000);
           }, 0);
         }
       }
