@@ -13,7 +13,6 @@
   "private": true,
   "devDependencies": {
     "babel": "^5",
-    "babel-core": "^5",
     "babel-loader": "^5",
     "babel-runtime": ">=5.0.0 <6.0.0",
     "bezier-easing": "^1.1.1",
@@ -55,6 +54,7 @@
     ]
   },
   "dependencies": {
+    "babel-core": "^5",
     "babel-runtime": ">=5.0.0 <6.0.0",
     "font-awesome": "^4.4.0",
     "history": "^1.13.1",
