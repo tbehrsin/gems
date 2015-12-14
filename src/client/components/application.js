@@ -161,10 +161,26 @@ export default class Application {
     scoreMesh.position.y = 7;
     this.scene.add(scoreMesh);
     this.multiplier = 1;
+    this.scoreEvents = {};
+
 
     this.board.addEventListener('destroy', (evt) => {
+
+
       if(evt.group.length > 5) this.score += evt.group.length * 127 * this.multiplier;
       else this.score += evt.group.length * 31 * this.multiplier;
+
+      if(this.score > 100000) {
+        let slot = (Math.log10(this.score) | 0).toString();
+        if (!(slot in this.scoreEvents)) {
+          this.scoreEvents[slot] = true;
+          setTimeout(function() {
+            _gs('event', 'Scored ' + Math.pow(10, slot));
+          }, 0);
+        }
+      }
+
+
 
       if(this.multiplier < 32) {
         this.multiplier *= 2;
