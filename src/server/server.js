@@ -7,6 +7,6 @@ let app = express();
 
 app.use('/', express.static(path.resolve(__dirname, '../../dist')));
 
-app.listen(3000, function() {
-  console.info('Listening on ' + 3000);
+app.listen(process.env.PORT || 3000, function() {
+  console.info('Listening on ' + (process.env.PORT || 3000));
 });
