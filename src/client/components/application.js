@@ -204,6 +204,12 @@ export default class Application {
                 href: 'http://gems.grexie.com/',
               }, function(response){});
             });
+            fbutton.addEventListener('touchstart', () => {
+              FB.ui({
+                method: 'share',
+                href: 'http://gems.grexie.com/',
+              }, function(response){});
+            });
           }, 0);
         }
       }
