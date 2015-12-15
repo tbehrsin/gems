@@ -87,7 +87,7 @@ class DefaultWebpackConfig {
     this.plugins = [
       this.configureHtmlPlugin(),
       this.configureProivdePlugin(),
-      new CopyWebpackPlugin([{ from: 'src/client/images/icon.jpg', to: '/images/icon.jpg' }])
+      new CopyWebpackPlugin([{ from: 'src/client/images/ogml-image.png', to: '/images/ogml-image.png' }, { from: 'src/client/images/icon.jpg', to: '/images/icon.jpg' }])
     ];
   }
 
