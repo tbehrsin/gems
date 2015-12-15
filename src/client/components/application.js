@@ -97,6 +97,9 @@ export default class Application {
 
 
     window.addEventListener('touchstart', (evt) => {
+      debugger;
+      if(evt.target.nodeName === 'BUTTON') return evt.target.dispatchEvent(new MouseEvent('click'));
+
       evt.preventDefault();
       window.dispatchEvent(new MouseEvent('mousedown', { clientX: evt.touches[0].clientX, clientY: evt.touches[0].clientY }));
     });
@@ -199,12 +202,6 @@ export default class Application {
             el.appendChild(fbutton);
 
             fbutton.addEventListener('click', () => {
-              FB.ui({
-                method: 'share',
-                href: 'http://gems.grexie.com/',
-              }, function(response){});
-            });
-            fbutton.addEventListener('touchstart', () => {
               FB.ui({
                 method: 'share',
                 href: 'http://gems.grexie.com/',
