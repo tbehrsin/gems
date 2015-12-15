@@ -174,8 +174,24 @@ export default class Application {
         let slot = ((this.score / 100000) | 0).toString();
         if (!this.scoreEvents[slot]) {
           this.scoreEvents[slot] = true;
-          setTimeout(function() {
+          setTimeout(() => {
             _gs('event', 'Scored ' + slot * 100000);
+
+            let el = document.getElementById("tweet-container");
+            while(el.firstChild) el.removeChild(el.firstChild);
+
+            twttr.widgets.createShareButton(
+              "http://gems.grexie.com/",
+              el,
+              {
+                size: "large",
+                via: "grexie",
+                related: "grexie",
+                text: "I just scored " + this.score + ' in Grexie Gems. Think you can beat me?',
+                url: 'http://gems.grexie.com/',
+                hashtags: "grexie,gems"
+              }
+            );
           }, 0);
         }
       }
