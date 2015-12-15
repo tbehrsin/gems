@@ -192,6 +192,18 @@ export default class Application {
                 hashtags: "grexie,gems"
               }
             );
+
+            let fbutton = document.createElement('button');
+            fbutton.textContent = 'Share on Facebook';
+            fbutton.className = 'fb-share-button';
+            el.appendChild(fbutton);
+
+            fbutton.addEventListener('click', () => {
+              FB.ui({
+                method: 'share',
+                href: 'http://gems.grexie.com/',
+              }, function(response){});
+            });
           }, 0);
         }
       }
