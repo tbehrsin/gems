@@ -97,8 +97,14 @@ export default class Application {
 
 
     window.addEventListener('touchstart', (evt) => {
-      debugger;
       if(evt.target.nodeName === 'BUTTON') return evt.target.dispatchEvent(new MouseEvent('click'));
+      var el = evt.target;
+      while(el && el.parentNode) {
+        if(el.className === 'ddd123-global_wrapper') {
+          return evt.target.dispatchEvent(new MouseEvent('click'));
+        }
+        el = el.parentNode;
+      }
 
       evt.preventDefault();
       window.dispatchEvent(new MouseEvent('mousedown', { clientX: evt.touches[0].clientX, clientY: evt.touches[0].clientY }));
