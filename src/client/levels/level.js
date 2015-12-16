@@ -1,6 +1,7 @@
 
 import THREE from 'three';
 import Tween from '../tween';
+import TextGeometry from '../components/text';
 
 export default class Level extends THREE.Object3D {
 
@@ -32,23 +33,65 @@ export default class Level extends THREE.Object3D {
 
     this.previousStage = this.activeStage;
     if(this.stageIndex < this.stages.length - 1) {
-      this.stageIndex++;
-      this.activeStage = new this.stages[this.stageIndex]();
+      if(this.previousStage) {
+        var stageCompleteParams = {
+          size: 1.5,
+          height: 0.3,
+          font: 'helvetiker',
+          weight: 'bold',
+          bevelEnabled: true,
+          bevelThickness: 0.1,
+          bevelSize: 0.1
+        };
+        var stageCompleteMaterial = new THREE.MeshPhongMaterial({
+          color: new THREE.Color("#003366"),
+          shininess: 100,
+          specular: new THREE.Color('#00aaaa')
+        });
 
-      this.add(this.activeStage.board);
+        var completeGeometry = new TextGeometry("STAGE COMPLETE", stageCompleteParams);
+        var completeMesh = new THREE.Mesh(completeGeometry, stageCompleteMaterial);
 
-      let box = new THREE.Box3().setFromObject(this.activeStage.board);
-      var scale = 16 / Math.max(box.max.x - box.min.x, box.max.y - box.min.y);
-      scale = Math.min(scale, 1.25);
-      this.activeStage.board.scale.set(scale, scale, scale);
+        let box = new THREE.Box3().setFromObject(completeMesh);
+        completeGeometry.applyMatrix( new THREE.Matrix4().setPosition(new THREE.Vector3(- (box.max.x - box.min.x) / 2, - (box.max.y - box.min.y) / 2, 0 ) ));
+
+        this.add(completeMesh);
+
+        this.tween.add('ease-in-out', 500, (t) => {
+          completeMesh.position.z = - (1 - t) * 30;
+        }, () => {
+          this.tween.add('ease-in-out', 1500, (t) => {
+            completeMesh.rotation.x = 6 * t * Math.PI;
+          })
+        })
+      }
+
 
       pending++;
-      this.tween.add('ease-in-out', 750, (t) => {
-        this.activeStage.board.position.z = 60 * (t - 1);
-      }, () => {
-        this.lock = false;
-        if(next && --pending === 0) next(this.stageIndex >= this.stages.length);
-      });
+      setTimeout(() => {
+        this.tween.add('ease-in-out', 500, (t) => {
+          if(completeMesh) completeMesh.position.z = t * 60;
+        }, () => {
+          if(completeMesh) this.remove(completeMesh);
+
+          this.stageIndex++;
+          this.activeStage = new this.stages[this.stageIndex]();
+
+          this.add(this.activeStage.board);
+
+          let box = new THREE.Box3().setFromObject(this.activeStage.board);
+          var scale = 16 / Math.max(box.max.x - box.min.x, box.max.y - box.min.y);
+          scale = Math.min(scale, 1.25);
+          this.activeStage.board.scale.set(scale, scale, scale);
+
+          this.tween.add('ease-in-out', 750, (t) => {
+            this.activeStage.board.position.z = 60 * (t - 1);
+          }, () => {
+            this.lock = false;
+            if (next && --pending === 0) next(this.stageIndex >= this.stages.length);
+          });
+        });
+      }, completeMesh ? 2000 : 0);
     } else {
       this.activeStage = null;
       this.stageIndex++;

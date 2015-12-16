@@ -15,6 +15,7 @@ export default class Gem extends Tile {
   constructor(type, color, multiplier, probability) {
     super(Gem.Geometry, new THREE.MeshPhongMaterial({
       color      :  new THREE.Color(color),
+      bumpMap: Gem.BumpMap,
       envMap     :  Gem.EnvMap,
     }));
     this.type = type;

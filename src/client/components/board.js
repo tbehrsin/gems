@@ -2,6 +2,45 @@
 import THREE from 'three';
 import { NextTile } from './tiles';
 import Tween from '../tween';
+import _Clink1Sound from '../sounds/clink1.mp3';
+import _Clink2Sound from '../sounds/clink2.mp3';
+import _Clink3Sound from '../sounds/clink3.mp3';
+import _Clink4Sound from '../sounds/clink4.mp3';
+import _ScratchSound from '../sounds/scratch_scrape.mp3';
+
+class Sound {
+  constructor(size, ...filenames) {
+    this.templates = filenames.map(filename => new Audio(filename));
+
+    this.pool = [];
+    for(var i = 0; i < size; i++) {
+      this.enqueue();
+    }
+  }
+
+  enqueue() {
+    this.templates.map(template => {
+      let audio = template.cloneNode();
+      audio.addEventListener('ended', () => {
+        audio.play();
+        audio.pause();
+        this.pool.push(audio);
+      })
+      audio.play();
+      audio.pause();
+      this.pool.push(audio);
+    });
+  }
+
+  play() {
+    let audio = this.pool.shift();
+    if(audio) audio.play();
+  }
+}
+
+
+let ClinkSound = new Sound(4, _Clink1Sound, _Clink2Sound, _Clink3Sound, _Clink4Sound);
+let ScratchSound = new Sound(10, _ScratchSound);
 
 class SwapQueue {
   constructor(board) {
@@ -229,6 +268,9 @@ export default class Board extends THREE.Object3D {
 
   resetPositions(next) {
     var pending = 0;
+    setTimeout(() => {
+      ClinkSound.play();
+    }, 0);
     for(var j = 0; j < this.height; j++) {
       for(var i = 0; i < this.width; i++) {
         let tile = this.tiles[j * this.width + i];
@@ -245,7 +287,9 @@ export default class Board extends THREE.Object3D {
             tile.position.z = position.z + (z - position.z) * t;
             tile.position.multiplyScalar(this.zoom);
           }, () => {
-            if(--pending <= 0) next();
+            if(--pending <= 0) {
+              next();
+            }
           })
         })(tile.position.clone().multiplyScalar(1 / this.zoom), i, j);
       }
@@ -350,7 +394,6 @@ export default class Board extends THREE.Object3D {
       });
 
       this.dispatchEvent({ type: 'destroy', group: group });
-
       group.forEach(tile => {
         if(!tile) return;
 

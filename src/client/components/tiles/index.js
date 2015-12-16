@@ -72,7 +72,7 @@ export class PinkDiamond extends Diamond {
   static Probability = 0.025;
 
   constructor() {
-    super('cyan-diamond', 0xff0088, 30, PinkDiamond.Probability);
+    super('pink-diamond', 0xff0088, 30, PinkDiamond.Probability);
   }
 }
 
@@ -134,8 +134,8 @@ export class NuclearNugget extends Nugget {
 export function NextTiles(...tiles) {
   let sum = tiles.reduce((a, b) => a + b.Probability, 0);
   let rand = sum * Math.random();
-  for(var i = 0; rand > 0 && i < tiles.length - 1; i++) rand -= tiles[i].Probability;
-  return tiles[i];
+  for(var i = 0; rand > 0 && i < tiles.length; i++) rand -= tiles[i].Probability;
+  return tiles[i - 1];
 }
 
 export function NextTile() {

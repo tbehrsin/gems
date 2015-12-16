@@ -2,11 +2,15 @@
 import THREE from 'three';
 import Level from './level';
 import Board from '../components/board';
-
-import { NextGem, NextGemOrDiamond, NextGemDiamondOrNugget, BlueGem, YellowGem, RedGem, PurpleGem, GreenDiamond } from '../components/tiles';
+import CrystalDropFall from '../sounds/music-crystal-drop-fall.mp3';
+import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, RedGem, PurpleGem, GreenDiamond } from '../components/tiles';
 
 
 export default () => {
+
+  let audio = new Audio(CrystalDropFall);
+  audio.play();
+
   let level = new Level();
 
   level.add(new THREE.AmbientLight(0xffffff));
@@ -80,7 +84,35 @@ export default () => {
   });
 
   level.stage(function () {
-    this.board = new Board(6, 6, () => new (NextGemOrDiamond()));
+    let nextTiles = [
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+      PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
+      CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
+    ];
+
+
+    this.board = new Board(6, 6, () => new (nextTiles.shift() || NextGemDiamondOrNugget()));
 
     this.groups = 0;
 

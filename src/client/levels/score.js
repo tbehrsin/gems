@@ -119,7 +119,7 @@ export default class Score extends THREE.Object3D {
 
           n.mesh.rotateX(Math.PI / 2);
           pending++;
-          this.tween.add('ease-in-out', 400, (t) => {
+          this.tween.add('ease-in-out', 250, (t) => {
             o.mesh.rotation.x = -t * Math.PI / 2;
             n.mesh.rotation.x = 2 * (1 - t) * Math.PI;
           }, () => {

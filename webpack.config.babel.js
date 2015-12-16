@@ -65,7 +65,7 @@ class DefaultWebpackConfig {
 
   configureImageLoader() {
     return {
-      test: /\.(woff2?|ttf|eot|svg|png|jpg|jpeg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      test: /\.(woff2?|ttf|eot|svg|png|jpg|jpeg|m4a|mp3)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: "file-loader?name=/images/[name]-[md5:hash:base62:8].[ext]"
     }
   }
