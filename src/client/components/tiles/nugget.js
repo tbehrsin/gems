@@ -1,26 +1,25 @@
 
 import THREE from 'three';
-import Gem from './gem';
-import Model from './opal.json';
+import Tile from './tile';
+import Model from './nugget.json';
 import RubyTexture from '../../images/ruby-texture.jpg';
 import BumpMap from '../../images/Stoneseamless.png';
 import SteelEnvMap from '../../images/envmap_steel.jpg';
 
-export default class Opal extends Gem {
+export default class Nugget extends Tile {
   static Geometry = new THREE.JSONLoader().parse(Model).geometry;
   static Map = THREE.ImageUtils.loadTexture(RubyTexture);
   static BumpMap = THREE.ImageUtils.loadTexture(BumpMap);
   static EnvMap = THREE.ImageUtils.loadTexture(SteelEnvMap);
 
-  get type() {
-    return "opal";
-  }
-
-  constructor() {
-    super(Opal.Geometry, new THREE.MeshPhongMaterial({
-      color      :  new THREE.Color("#0000ff"),
-      envMap     :  Opal.EnvMap,
+  constructor(type, color, multiplier, probability) {
+    super(Nugget.Geometry, new THREE.MeshPhongMaterial({
+      color      :  new THREE.Color(color),
+      envMap     :  Nugget.EnvMap,
     }));
+    this.type = type;
+    this.multiplier = multiplier;
+    this.probability = probability;
   }
 
 };

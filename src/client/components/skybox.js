@@ -9,7 +9,7 @@ import LostValleyBack from '../images/skybox_02.jpg';
 
 
 export default class SkyBox extends THREE.Mesh {
-  static Geometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
+  static Geometry = new THREE.CubeGeometry( 100000, 100000, 100000 );
 
   static get LostValley() {
     return new SkyBox([

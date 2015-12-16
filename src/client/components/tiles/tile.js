@@ -9,7 +9,7 @@ let _ParticleTexture = THREE.ImageUtils.loadTexture(
   ParticleTexture
 );
 
-export default class Gem extends THREE.Mesh {
+export default class Tile extends THREE.Mesh {
 
   constructor(geometry, material) {
     super(geometry, material);
@@ -36,6 +36,8 @@ export default class Gem extends THREE.Mesh {
 
     this.tween = new Tween();
     this.destroyed = false;
+
+    this.lock = false;
   }
 
   render(renderer, scene, camera) {
@@ -44,6 +46,17 @@ export default class Gem extends THREE.Mesh {
 
   update(delta) {
     this.tween.update(delta);
+
+    if(!this.lock && Math.random() < 0.0005) {
+      this.lock = true;
+      let direction = Math.sign(Math.random() - 0.5);
+      let startRotation = this.rotation.y;
+      this.tween.add('ease-in-out', 5000, (delta) => {
+        this.rotation.y = startRotation + direction * delta * Math.PI;
+      }, () => {
+        this.lock = false;
+      })
+    }
   }
 
   destroy(tween, next) {
