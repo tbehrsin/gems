@@ -9,7 +9,7 @@ let _ParticleTexture = THREE.ImageUtils.loadTexture(
   ParticleTexture
 );
 
-export default class Tile extends THREE.Mesh {
+export default class Gem extends THREE.Mesh {
 
   constructor(geometry, material) {
     super(geometry, material);

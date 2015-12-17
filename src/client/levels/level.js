@@ -2,6 +2,7 @@
 import THREE from 'three';
 import Tween from '../tween';
 import TextGeometry from '../components/text';
+import ProgressBar from '../components/progress';
 
 export default class Level extends THREE.Object3D {
 
@@ -13,6 +14,11 @@ export default class Level extends THREE.Object3D {
     this.previousStage = null;
     this.updaters = [];
     this.tween = new Tween();
+
+    this.progress = new ProgressBar(5, 1, 1, 0, 1, 0, 'STAGE');
+    this.progress.position.set(-12.75, 6, 0);
+    this.progress.visible = false;
+    this.add(this.progress);
 
     this.lock = false;
   }
@@ -26,11 +32,12 @@ export default class Level extends THREE.Object3D {
   }
 
   next(next) {
-    if(this.lock) return next(false);
+    if(this.lock) return next && next(false);
     this.lock = true;
 
     var pending = 0;
 
+    if(this.stageProgress) this.stageProgress.visible = false;
     this.previousStage = this.activeStage;
     if(this.stageIndex < this.stages.length - 1) {
       if(this.previousStage) {
@@ -77,18 +84,32 @@ export default class Level extends THREE.Object3D {
           this.stageIndex++;
           this.activeStage = new this.stages[this.stageIndex]();
 
+          this.stageProgress = this.activeStage.progress = new ProgressBar(5, 1, 1, 0, 1, 0, '');
+          this.activeStage.progress.position.set(-12.75, 4.5, 0);
+          this.stageProgress.visible = false;
+          this.add(this.activeStage.progress);
+
           this.add(this.activeStage.board);
 
           let box = new THREE.Box3().setFromObject(this.activeStage.board);
           var scale = 16 / Math.max(box.max.x - box.min.x, box.max.y - box.min.y);
           scale = Math.min(scale, 1.25);
           this.activeStage.board.scale.set(scale, scale, scale);
-
+          this.progress.visible = true;
+          this.progress.text = 'STAGE ' + (this.stageIndex + 1);
+          this.progress.min = 0;
+          this.progress.max = this.stages.length;
+          this.progress.value = this.stageIndex;
           this.tween.add('ease-in-out', 750, (t) => {
             this.activeStage.board.position.z = 60 * (t - 1);
           }, () => {
             this.lock = false;
-            if (next && --pending === 0) next(this.stageIndex >= this.stages.length);
+            this.stageProgress.visible = true;
+            if ((--pending === 0) && (next)) {
+              next(this.stageIndex >= this.stages.length);
+            } else if(pending === 0) {
+              if(this.stageIndex >= this.stages.length) this.dispatchEvent({type:'complete'});
+            }
           });
         });
       }, completeMesh ? 2000 : 0);
@@ -119,11 +140,19 @@ export default class Level extends THREE.Object3D {
         this.remove(this.previousStage.board);
         this.previousStage = null;
         this.lock = false;
-        if(next && --pending === 0) next(this.stageIndex >= this.stages.length);
+        if((--pending === 0) && next) {
+          next(this.stageIndex >= this.stages.length);
+        } else if(pending === 0) {
+          if(this.stageIndex >= this.stages.length) this.dispatchEvent({type:'complete'});
+        }
       });
     }
 
-    if(next && pending === 0) next(this.stageIndex >= this.stages.length);
+    if((pending === 0) && next) {
+      next(this.stageIndex >= this.stages.length);
+    } else if(pending === 0) {
+      if(this.stageIndex >= this.stages.length) this.dispatchEvent({type:'complete'});
+    }
   }
 
   update(delta) {
@@ -145,6 +174,8 @@ export default class Level extends THREE.Object3D {
     });
 
     this.tween.update(delta);
+    this.progress.update(delta);
+    if(this.stageProgress) this.stageProgress.update(delta);
   }
 
   onMouseDown = (evt) => {
@@ -214,4 +245,10 @@ export default class Level extends THREE.Object3D {
     window.addEventListener('mouseup', onmouseup, false);
 
   };
+
+  render(renderer, scene, camera) {
+    if(this.activeStage) {
+      this.activeStage.board.render(renderer, scene, camera);
+    }
+  }
 };

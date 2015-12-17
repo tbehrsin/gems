@@ -6,7 +6,9 @@ import RubyTexture from '../../images/ruby-texture.jpg';
 import BumpMap from '../../images/Stoneseamless.png';
 import SteelEnvMap from '../../images/envmap_steel.jpg';
 
-export default class Nugget extends Tile {
+import FresnelShader from '../../shaders/fresnel';
+
+export class Nugget extends Tile {
   static Geometry = new THREE.JSONLoader().parse(Model).geometry;
   static Map = THREE.ImageUtils.loadTexture(RubyTexture);
   static BumpMap = THREE.ImageUtils.loadTexture(BumpMap);
@@ -14,7 +16,7 @@ export default class Nugget extends Tile {
 
   constructor(type, color, multiplier, probability) {
     super(Nugget.Geometry, new THREE.MeshPhongMaterial({
-      color      :  new THREE.Color(color),
+      color      :  color instanceof THREE.Color ? color : new THREE.Color(color),
       envMap     :  Nugget.EnvMap,
     }));
     this.type = type;
@@ -23,3 +25,36 @@ export default class Nugget extends Tile {
   }
 
 };
+
+
+export class GlassNugget extends Tile {
+
+  static Probability = 0.014;
+
+  static Geometry = new THREE.JSONLoader().parse(Model).geometry;
+  static Map = THREE.ImageUtils.loadTexture(RubyTexture);
+  static BumpMap = THREE.ImageUtils.loadTexture(BumpMap);
+  static EnvMap = THREE.ImageUtils.loadTexture(SteelEnvMap);
+
+  constructor() {
+    let fresnelUniforms = {
+      "mRefractionRatio": { type: "f", value: 1.1 },
+      "mFresnelBias": 	{ type: "f", value: 0.1 },
+      "mFresnelPower": 	{ type: "f", value: 2.0 },
+      "mFresnelScale": 	{ type: "f", value: 1.0 },
+      "tCube": 			{ type: "t", value: Nugget.EnvMap }
+    };
+
+    let material = new THREE.ShaderMaterial({
+      uniforms: fresnelUniforms,
+      vertexShader: FresnelShader.vertexShader,
+      fragmentShader: FresnelShader.fragmentShader
+    });
+
+    super(Nugget.Geometry, material);
+
+    this.type = 'glass-nugget';
+    this.multiplier = 50;
+    this.probability = 0.014;
+  }
+}

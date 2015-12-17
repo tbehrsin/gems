@@ -3,7 +3,7 @@ import THREE from 'three';
 import Level from './level';
 import Board from '../components/board';
 import CrystalDropFall from '../sounds/music-crystal-drop-fall.mp3';
-import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, RedGem, PurpleGem, GreenDiamond } from '../components/tiles';
+import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, GlassNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, RedGem, PurpleGem, GreenDiamond } from '../components/tiles';
 
 
 export default () => {
@@ -45,12 +45,36 @@ export default () => {
   });
 
 
+  let checkGroups = (self, maxGroups) => {
+    let groups = 0;
 
+    setTimeout(() => {
+      self.progress.min = 0;
+      self.progress.max = maxGroups;
+      self.progress.value = 0;
+      self.progress.text = maxGroups + ' TO GO';
+    }, 0);
+
+    self.board.addEventListener('destroy', (evt) => {
+      groups++;
+      if(groups < maxGroups) {
+        self.progress.text = (maxGroups - groups) + ' TO GO';
+      } else {
+        self.progress.text = 'COMPLETE';
+      }
+
+      self.progress.value = Math.min(groups, maxGroups);
+      level.score.addScore(evt.group);
+      if(groups >= maxGroups) self.board.addEventListener('validated', (evt) => {
+        level.next();
+      });
+    });
+  };
 
 
   level.stage(function () {
     let nextTiles = [
-      BlueGem,   RedGem,    BlueGem,   YellowGem,
+      GlassNugget,   RedGem,    BlueGem,   YellowGem,
       PurpleGem, RedGem,    YellowGem, PurpleGem,
       PurpleGem, GreenDiamond,  RedGem,    PurpleGem,
       YellowGem, YellowGem, GreenDiamond,  RedGem
@@ -58,29 +82,13 @@ export default () => {
 
     this.board = new Board(4, 4, () => new (nextTiles.shift() || NextGem()));
 
-    this.groups = 0;
-
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 5) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 5);
   });
 
   level.stage(function () {
     this.board = new Board(5, 5, () => new (NextGemOrDiamond()));
 
-    this.groups = 0;
-
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 10) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 10);
   });
 
   level.stage(function () {
@@ -114,70 +122,31 @@ export default () => {
 
     this.board = new Board(6, 6, () => new (nextTiles.shift() || NextGemDiamondOrNugget()));
 
-    this.groups = 0;
-
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 15) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 15);
   });
 
   level.stage(function () {
     this.board = new Board(7, 7, () => new (NextGemOrDiamond()));
 
-    this.groups = 0;
-
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 20) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 20);
   });
 
   level.stage(function () {
     this.board = new Board(8, 8, () => new (NextGemOrDiamond()));
 
-    this.groups = 0;
-
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 30) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 30);
   });
 
   level.stage(function () {
     this.board = new Board(9, 9, () => new (NextGemOrDiamond()));
 
-    this.groups = 0;
-
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 50) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 50);
   });
 
   level.stage(function () {
     this.board = new Board(10, 10, () => new (NextGemDiamondOrNugget()));
 
-    this.groups = 0;
-    this.board.addEventListener('destroy', (evt) => {
-      this.groups++;
-      level.score.addScore(evt.group);
-      if(this.groups >= 25) this.board.addEventListener('validated', (evt) => {
-        level.next();
-      });
-    });
+    checkGroups(this, 25);
   });
 
   return level;

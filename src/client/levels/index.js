@@ -3,23 +3,25 @@ import THREE from 'three';
 import Score from './score';
 import Level1 from './level-1';
 import Level2 from './level-2';
+import TextGeometry from '../components/text';
+import Tween from '../tween';
+import ProgressBar from '../components/progress';
 
 export default new class Levels extends THREE.Object3D {
   constructor() {
     super();
 
+    this.tween = new Tween();
     this.score = new Score(0);
     this.add(this.score);
 
-    this.levelIndex = 0;
+    this.levelIndex = -1;
     this.levels = [
       Level1,
       Level2
     ];
 
-    this.activeLevel = new this.levels[this.levelIndex]();
-    this.add(this.activeLevel);
-    this.activeLevel.next();
+    this.next();
 
     window.addEventListener('touchstart', (evt) => {
       if(evt.target.nodeName === 'BUTTON') return evt.target.dispatchEvent(new MouseEvent('click'));
@@ -131,8 +133,61 @@ export default new class Levels extends THREE.Object3D {
      });*/
   }
 
+  next() {
+    this.activeLevel = new this.levels[++this.levelIndex]();
+
+    this.activeLevel.addEventListener('complete', () => {
+      this.remove(this.activeLevel);
+      this.next();
+    });
+
+    this.add(this.activeLevel);
+
+    var levelCompleteParams = {
+      size: 1.5,
+      height: 0.3,
+      font: 'helvetiker',
+      weight: 'bold',
+      bevelEnabled: true,
+      bevelThickness: 0.1,
+      bevelSize: 0.1
+    };
+    var levelCompleteMaterial = new THREE.MeshPhongMaterial({
+      color: new THREE.Color("#336633"),
+      shininess: 100,
+      specular: new THREE.Color('#00aa00')
+    });
+
+    var completeGeometry = new TextGeometry("LEVEL " + (this.levelIndex + 1), levelCompleteParams);
+    var completeMesh = new THREE.Mesh(completeGeometry, levelCompleteMaterial);
+
+    let box = new THREE.Box3().setFromObject(completeMesh);
+    completeGeometry.applyMatrix( new THREE.Matrix4().setPosition(new THREE.Vector3(- (box.max.x - box.min.x) / 2, - (box.max.y - box.min.y) / 2, 0 ) ));
+
+    this.add(completeMesh);
+
+    this.tween.add('ease-in-out', 500, (t) => {
+      completeMesh.position.z = - (1 - t) * 30;
+    }, () => {
+      setTimeout(() => {
+        this.tween.add('ease-in-out', 500, (t) => {
+          completeMesh.position.z = t * 60;
+        }, () => {
+          this.remove(completeMesh);
+        });
+
+        this.activeLevel.next();
+      }, 1000);
+    });
+  }
+
   update(delta) {
     this.activeLevel.update(delta);
     this.score.update(delta);
+    this.tween.update(delta);
+  }
+
+  render(renderer, scene, camera) {
+    if(this.activeLevel) this.activeLevel.render(renderer, scene, camera);
   }
 };

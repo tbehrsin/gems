@@ -1,7 +1,7 @@
 
 import Gem from './gem';
 import Diamond from './diamond';
-import Nugget from './nugget';
+import { GlassNugget as _GlassNugget, Nugget } from './nugget';
 
 
 export class BlueGem extends Gem {
@@ -76,15 +76,6 @@ export class PinkDiamond extends Diamond {
   }
 }
 
-export class GlassNugget extends Nugget {
-
-  static Probability = 0.014;
-
-  constructor() {
-    super('glass-nugget', 0xffffff, 50, GlassNugget.Probability);
-  }
-}
-
 export class BronzeNugget extends Nugget {
 
   static Probability = 0.008;
@@ -129,6 +120,8 @@ export class NuclearNugget extends Nugget {
     super('nuclear-nugget', 0x0000ff, 1000, NuclearNugget.Probability);
   }
 }
+
+export const GlassNugget = _GlassNugget;
 
 
 export function NextTiles(...tiles) {

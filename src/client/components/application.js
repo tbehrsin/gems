@@ -99,7 +99,7 @@ export default class Application {
   }
 
   render(renderer, scene, camera) {
-    //this.board.render(renderer, scene, camera);
+    this.levels.render(renderer, scene, camera);
     this.renderer.render(scene, camera);
   }
 }
