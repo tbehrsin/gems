@@ -68,13 +68,13 @@ export default () => {
 
 
   level.stage(function () {
-    this.board = new Board(4, 10);
+    this.board = new Board(10, 10);
 
     checkGroups(this, 20);
   });
 
   level.stage(function () {
-    this.board = new Board(10, 4);
+    this.board = new Board(10, 10);
     checkGroups(this, 20);
   });
 
@@ -100,7 +100,7 @@ export default () => {
   });
 
   level.stage(function () {
-    this.board = new Board(10, 10);
+    this.board = new Board(20, 20);
     checkGroups(this, 200);
   });
 
