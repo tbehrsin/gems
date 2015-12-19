@@ -22,12 +22,12 @@ export class YellowGem extends Gem {
   }
 }
 
-export class RedGem extends Gem {
+export class GreenGem extends Gem {
 
   static Probability = 0.125;
 
   constructor() {
-    super('red-gem', 0xff0000, 6, RedGem.Probability);
+    super('green-gem', 0x00ff00, 6, GreenGem.Probability);
   }
 }
 
@@ -132,17 +132,17 @@ export function NextTiles(...tiles) {
 }
 
 export function NextTile() {
-  return NextTiles(BlueGem, YellowGem, RedGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond, GlassNugget, BronzeNugget, SilverNugget, GoldNugget, LavaNugget, NuclearNugget);
+  return NextTiles(BlueGem, YellowGem, GreenGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond, GlassNugget, BronzeNugget, SilverNugget, GoldNugget, LavaNugget, NuclearNugget);
 };
 
 export function NextGem() {
-  return NextTiles(BlueGem, YellowGem, RedGem, PurpleGem);
+  return NextTiles(BlueGem, YellowGem, GreenGem, PurpleGem);
 };
 
 export function NextGemOrDiamond() {
-  return NextTiles(BlueGem, YellowGem, RedGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond);
+  return NextTiles(BlueGem, YellowGem, GreenGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond);
 };
 
 export function NextGemDiamondOrNugget() {
-  return NextTiles(BlueGem, YellowGem, RedGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond, GlassNugget, BronzeNugget, SilverNugget, GoldNugget, LavaNugget, NuclearNugget);
+  return NextTiles(BlueGem, YellowGem, GreenGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond, GlassNugget, BronzeNugget, SilverNugget, GoldNugget, LavaNugget, NuclearNugget);
 }

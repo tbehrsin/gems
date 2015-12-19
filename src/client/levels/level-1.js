@@ -3,7 +3,7 @@ import THREE from 'three';
 import Level from './level';
 import Board from '../components/board';
 import CrystalDropFall from '../sounds/music-crystal-drop-fall.mp3';
-import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, GlassNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, RedGem, PurpleGem, GreenDiamond } from '../components/tiles';
+import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, GlassNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, GreenGem, PurpleGem, GreenDiamond } from '../components/tiles';
 import YellowGasGiant from '../images/gas-giant-yellow.jpg';
 import Europa from '../images/Moon.jpg';
 import EuropaBump from '../images/Moon2-Bump.jpg';
@@ -178,10 +178,10 @@ export default () => {
 
   level.stage(function () {
     let nextTiles = [
-      GlassNugget,   RedGem,    BlueGem,   YellowGem,
-      PurpleGem, RedGem,    YellowGem, PurpleGem,
-      PurpleGem, GreenDiamond,  RedGem,    PurpleGem,
-      YellowGem, YellowGem, GreenDiamond,  RedGem
+      GlassNugget,   GreenGem,    BlueGem,   YellowGem,
+      PurpleGem, GreenGem,    YellowGem, PurpleGem,
+      PurpleGem, GreenDiamond,  GreenGem,    PurpleGem,
+      YellowGem, YellowGem, GreenDiamond,  GreenGem
     ];
 
     this.board = new Board(4, 4, () => new (nextTiles.shift() || NextGem()));
