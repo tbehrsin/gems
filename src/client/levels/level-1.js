@@ -4,8 +4,11 @@ import Level from './level';
 import Board from '../components/board';
 import CrystalDropFall from '../sounds/music-crystal-drop-fall.mp3';
 import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, GlassNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, RedGem, PurpleGem, GreenDiamond } from '../components/tiles';
-
-
+import YellowGasGiant from '../images/gas-giant-yellow.jpg';
+import Europa from '../images/Moon.jpg';
+import EuropaBump from '../images/Moon2-Bump.jpg';
+import GlowShader from '../shaders/glow';
+import SkyBox from '../components/skybox';
 export default () => {
 
   let audio = new Audio(CrystalDropFall);
@@ -13,7 +16,7 @@ export default () => {
 
   let level = new Level();
 
-  level.add(new THREE.AmbientLight(0xffffff));
+  level.add(new THREE.AmbientLight(0x444444));
 
   let lights = new THREE.Object3D();
 
@@ -33,10 +36,11 @@ export default () => {
   pointLight.position.set( 15, -15, 5 );
   lights.add( pointLight );
 
-  var light = new THREE.DirectionalLight(0xffffff, 5);
-  light.position.set(0, 100, 10);
-  light.lookAt(0, -100, -10);
-  lights.add(light);
+  var light = new THREE.DirectionalLight(0xffffff, 0.5);
+  light.position.set(10, 10, 20);
+  light.lookAt(-10, 10, -20);
+  //lights.add(light);
+  level.add(light);
 
   level.add(lights);
 
@@ -71,6 +75,85 @@ export default () => {
     });
   };
 
+  level.scene(function() {
+    this.add(SkyBox.LostValley);
+    let g_planet1 = new THREE.SphereGeometry(500, 128, 128);
+    let m_planet1 = new THREE.MeshPhongMaterial({ color: 0xffff00, specular: 0x444444, shininess: 10, map: THREE.ImageUtils.loadTexture(YellowGasGiant) });
+    let planet1 = new THREE.Mesh(g_planet1, m_planet1);
+    planet1.position.set(-500, -250, -500);
+    this.add(planet1);
+
+    let glowMaterial1 =  new THREE.ShaderMaterial({
+      uniforms: {
+        c: {type: "f", value: 0.0001},
+        p: {type: "f", value: 3},
+        glowColor: {type: "c", value: new THREE.Color(0xffaa00)},
+        viewVector: {type: "v3", value: new THREE.Vector3(1,1,-1).normalize()}
+      },
+      vertexShader: GlowShader.vertexShader,
+      fragmentShader: GlowShader.fragmentShader,
+      side: THREE.FrontSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+
+    let glow_planet1 = new THREE.Mesh(g_planet1, glowMaterial1);
+    glow_planet1.scale.multiplyScalar(1.05);
+    this.add(glow_planet1);
+
+
+    let g_planet2 = new THREE.SphereGeometry(70, 128, 128);
+    let m_planet2 = new THREE.MeshPhongMaterial({ color: 0xffffff, specular: 0x444444, map: THREE.ImageUtils.loadTexture(Europa), shininess: 0.5, bumpMap: THREE.ImageUtils.loadTexture(EuropaBump), bumpScale: 0.5 });
+    let planet2 = new THREE.Mesh(g_planet2, m_planet2);
+    planet2.position.set(-50, -70, -200);
+    this.add(planet2);
+
+    let glowMaterial2 =  new THREE.ShaderMaterial({
+      uniforms: {
+        c: {type: "f", value: 0.0005},
+        p: {type: "f", value: 10},
+        glowColor: {type: "c", value: new THREE.Color(0xffffff)},
+        viewVector: {type: "v3", value: new THREE.Vector3(1,1,-1).normalize()}
+      },
+      vertexShader: GlowShader.vertexShader,
+      fragmentShader: GlowShader.fragmentShader,
+      side: THREE.FrontSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+
+    let glow_planet2 = new THREE.Mesh(g_planet2, glowMaterial2);
+    glow_planet2.scale.multiplyScalar(1.05);
+    this.add(glow_planet2);
+
+    let rotation = -Math.PI / 4;
+    this.update = (delta) => {
+      planet1.rotateZ(Math.PI / 18);
+      planet1.rotateY(delta * Math.PI / 360);
+      planet1.rotateZ(-Math.PI / 18);
+
+      rotation += delta * Math.PI / 360;
+      planet2.position.set(-500 + 600 * Math.cos(rotation), -70, -500 + 600 * Math.sin(rotation));
+      planet2.rotateZ(-Math.PI / 18);
+      planet2.rotateY(delta * Math.PI / 360);
+      planet2.rotateZ(Math.PI / 18);
+
+      glow_planet1.position.copy(planet1.position);
+      glowMaterial1.uniforms.viewVector.value = planet1.position.clone();
+      glowMaterial1.uniforms.viewVector.value.z *= -1;
+      glowMaterial1.uniforms.viewVector.value.normalize();
+      glow_planet2.position.copy(planet2.position);
+      glowMaterial2.uniforms.viewVector.value = planet2.position.clone();
+      glowMaterial2.uniforms.viewVector.value.z *= -1;
+      glowMaterial2.uniforms.viewVector.value.normalize();
+    };
+
+    this.update(0);
+
+    this.fog = new THREE.Fog( 0x000000, 250, 550 );
+
+
+  });
 
   level.stage(function () {
     let nextTiles = [

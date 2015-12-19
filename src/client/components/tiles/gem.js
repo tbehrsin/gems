@@ -3,8 +3,8 @@ import THREE from 'three';
 import Tile from './tile';
 import Model from './gem.json';
 import RubyTexture from '../../images/ruby-texture.jpg';
-import BumpMap from '../../images/Stoneseamless.png';
-import SteelEnvMap from '../../images/envmap_steel.jpg';
+import BumpMap from '../../images/11376-bump.jpg';
+import SteelEnvMap from '../../images/envmap_brass.jpg';
 
 export default class Gem extends Tile {
   static Geometry = new THREE.JSONLoader().parse(Model).geometry;
@@ -15,8 +15,14 @@ export default class Gem extends Tile {
   constructor(type, color, multiplier, probability) {
     super(Gem.Geometry, new THREE.MeshPhongMaterial({
       color      :  new THREE.Color(color),
+      specular: new THREE.Color(0x444444),
       bumpMap: Gem.BumpMap,
-      envMap     :  Gem.EnvMap
+      shading: THREE.SmoothShading,
+      bumpScale: 0.05,
+      shininess: 45,
+      metal: false,
+      envMap:  Gem.EnvMap,
+      transparency: true
     }));
     this.type = type;
     this.multiplier = multiplier;
@@ -24,3 +30,13 @@ export default class Gem extends Tile {
   }
 
 };
+
+
+Gem.Geometry.computeVertexNormals();
+//Gem.Geometry.computeFaceNormals();
+
+Gem.BumpMap.anisotropy = 4;
+Gem.BumpMap.repeat.set( 0.998, 0.998 );
+Gem.BumpMap.offset.set( 0.001, 0.001 )
+Gem.BumpMap.wrapS = Gem.BumpMap.wrapT = THREE.RepeatWrapping;
+Gem.BumpMap.format = THREE.RGBFormat;

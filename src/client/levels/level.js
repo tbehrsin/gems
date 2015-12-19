@@ -8,6 +8,7 @@ export default class Level extends THREE.Object3D {
 
   constructor() {
     super();
+    this.scenes = [];
     this.stages = [];
     this.stageIndex = -1;
     this.activeStage = null;
@@ -27,6 +28,16 @@ export default class Level extends THREE.Object3D {
     return this.parent.score;
   }
 
+  scene(scope) {
+    let scene = function() {
+      THREE.Object3D.apply(this, arguments);
+      this.tween = new Tween();
+      scope.call(this);
+    };
+    scene.prototype = Object.create(THREE.Scene.prototype);
+    this.scenes.push(scene);
+  }
+
   stage(scope) {
     this.stages.push(scope);
   }
@@ -36,6 +47,11 @@ export default class Level extends THREE.Object3D {
     this.lock = true;
 
     var pending = 0;
+
+    if(!this.activeScene) {
+      this.activeScene = new this.scenes[0]();
+      this.add(this.activeScene);
+    }
 
     if(this.stageProgress) this.stageProgress.visible = false;
     this.previousStage = this.activeStage;
@@ -159,6 +175,11 @@ export default class Level extends THREE.Object3D {
     if(typeof delta === 'function') return this.updaters.push(delta);
 
     if(this.activeStage) {
+      if(this.activeScene.update) this.activeScene.update(delta);
+      this.activeScene.tween.update(delta);
+    }
+
+    if(this.activeStage) {
       this.activeStage.board.update(delta);
     }
     if(this.previousStage) {
@@ -175,6 +196,7 @@ export default class Level extends THREE.Object3D {
 
     this.tween.update(delta);
     this.progress.update(delta);
+
     if(this.stageProgress) this.stageProgress.update(delta);
   }
 
@@ -247,6 +269,9 @@ export default class Level extends THREE.Object3D {
   };
 
   render(renderer, scene, camera) {
+    if(this.activeScene) {
+      scene.fog = this.activeScene.fog;
+    }
     if(this.activeStage) {
       this.activeStage.board.render(renderer, scene, camera);
     }

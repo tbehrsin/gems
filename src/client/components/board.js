@@ -54,7 +54,7 @@ class SwapQueue {
     let head = this.queue[0];
     if(!head) {
       if (this.lastOp) {
-        this.queue.push(head = new SwapOperation(this.lastOp.tile, this.lastOp.adjacenttile, this.lastOp.sx, 0, this.lastOp.sy, 0));
+        this.queue.push(head = new SwapOperation(this.lastOp.tile, this.lastOp.adjacentTile, this.lastOp.sx, 0, this.lastOp.sy, 0));
       }
       else {
         this.completing = false;
@@ -74,7 +74,7 @@ class SwapQueue {
     let tail = this.queue[this.queue.length - 1];
     if(!tail) {
       if(this.lastOp) {
-        this.queue.push(tail = new SwapOperation(this.lastOp.tile, this.lastOp.adjacenttile, this.lastOp.sx, this.lastOp.tx, this.lastOp.sy, this.lastOp.ty));
+        this.queue.push(tail = new SwapOperation(this.lastOp.tile, this.lastOp.adjacentTile, this.lastOp.sx, this.lastOp.tx, this.lastOp.sy, this.lastOp.ty));
       }
       else {
         this.completing = false;
@@ -87,11 +87,11 @@ class SwapQueue {
     }
 
     tail.complete(() => {
-      let adjacentStartPosition = tail.adjacenttile.startPosition;
-      let adjacentIndex = this.board.tiles.indexOf(tail.adjacenttile);
+      let adjacentStartPosition = tail.adjacentTile.startPosition;
+      let adjacentIndex = this.board.tiles.indexOf(tail.adjacentTile);
 
-      this.board.tiles[this.board.tiles.indexOf(tail.tile)] = tail.adjacenttile;
-      tail.adjacenttile.startPosition = tail.tile.startPosition;
+      this.board.tiles[this.board.tiles.indexOf(tail.tile)] = tail.adjacentTile;
+      tail.adjacentTile.startPosition = tail.tile.startPosition;
       this.board.tiles[adjacentIndex] = tail.tile;
       tail.tile.startPosition = adjacentStartPosition;
 
@@ -119,10 +119,10 @@ class SwapQueue {
     this.board.tween.add('ease-in-out', head.duration, (delta) => {
       if(completed) alert('completed');
       if(head.sx) {
-        let { tile, adjacenttile, sx } = head;
+        let { tile, adjacentTile, sx } = head;
         let tx = head.tx * delta;
 
-        if(this.lastOp && this.lastOp.matches(tile, adjacenttile)) {
+        if(this.lastOp && this.lastOp.matches(tile, adjacentTile)) {
           tx = this.lastOp.tx + (head.tx - this.lastOp.tx) * delta;
         }
 
@@ -132,16 +132,16 @@ class SwapQueue {
         tile.position.multiplyScalar(this.board.zoom);
         tile.updateCubeMap = true;
 
-        adjacenttile.position.x = adjacenttile.startPosition.x - sx * (1 + Math.cos(Math.PI - tx));
-        adjacenttile.position.y = adjacenttile.startPosition.y;
-        adjacenttile.position.z = adjacenttile.startPosition.z - ( Math.sin(Math.PI - tx));
-        adjacenttile.position.multiplyScalar(this.board.zoom);
-        adjacenttile.updateCubeMap = true;
+        adjacentTile.position.x = adjacentTile.startPosition.x - sx * (1 + Math.cos(Math.PI - tx));
+        adjacentTile.position.y = adjacentTile.startPosition.y;
+        adjacentTile.position.z = adjacentTile.startPosition.z - ( Math.sin(Math.PI - tx));
+        adjacentTile.position.multiplyScalar(this.board.zoom);
+        adjacentTile.updateCubeMap = true;
       } else if(head.sy) {
-        let { tile, adjacenttile, sy } = head;
+        let { tile, adjacentTile, sy } = head;
         let ty = head.ty * delta;
 
-        if(this.lastOp && this.lastOp.matches(tile, adjacenttile)) {
+        if(this.lastOp && this.lastOp.matches(tile, adjacentTile)) {
           ty = this.lastOp.ty + (head.ty - this.lastOp.ty) * delta;
         }
 
@@ -151,11 +151,11 @@ class SwapQueue {
         tile.position.multiplyScalar(this.board.zoom);
         tile.updateCubeMap = true;
 
-        adjacenttile.position.x = adjacenttile.startPosition.x;
-        adjacenttile.position.y = adjacenttile.startPosition.y - sy * (1 + Math.cos(Math.PI - ty));
-        adjacenttile.position.z = adjacenttile.startPosition.z - ( Math.sin(Math.PI - ty));
-        adjacenttile.position.multiplyScalar(this.board.zoom);
-        adjacenttile.updateCubeMap = true;
+        adjacentTile.position.x = adjacentTile.startPosition.x;
+        adjacentTile.position.y = adjacentTile.startPosition.y - sy * (1 + Math.cos(Math.PI - ty));
+        adjacentTile.position.z = adjacentTile.startPosition.z - ( Math.sin(Math.PI - ty));
+        adjacentTile.position.multiplyScalar(this.board.zoom);
+        adjacentTile.updateCubeMap = true;
       }
     }, () => {
       completed = true;
@@ -171,23 +171,23 @@ class SwapQueue {
     if(this.completing) return;
 
     if(tx > ty) {
-      let adjacenttile = this.board.adjacenttile(tile, sx, 0);
+      let adjacentTile = this.board.adjacentTile(tile, sx, 0);
       this.queue.slice(0, this.queue.length - 1).forEach(op => op.cancel());
-      if(this.queue.length && this.queue[this.queue.length - 1].matches(tile, adjacenttile)) {
+      if(this.queue.length && this.queue[this.queue.length - 1].matches(tile, adjacentTile)) {
         this.queue[this.queue.length - 1].tx = tx;
       } else {
         this.queue.forEach(op => op.cancel());
-        this.queue.push(new SwapOperation(tile, adjacenttile, sx, tx, 0, 0, 400));
+        this.queue.push(new SwapOperation(tile, adjacentTile, sx, tx, 0, 0, 400));
         this.run();
       }
     } else {
-      let adjacenttile = this.board.adjacenttile(tile, 0, sy);
+      let adjacentTile = this.board.adjacentTile(tile, 0, sy);
       this.queue.slice(0, this.queue.length - 1).forEach(op => op.cancel());
-      if(this.queue.length && this.queue[this.queue.length - 1].matches(tile, adjacenttile)) {
+      if(this.queue.length && this.queue[this.queue.length - 1].matches(tile, adjacentTile)) {
         this.queue[this.queue.length - 1].ty = ty;
       } else {
         this.queue.forEach(op => op.cancel());
-        this.queue.push(new SwapOperation(tile, adjacenttile, 0, 0, sy, ty, 400));
+        this.queue.push(new SwapOperation(tile, adjacentTile, 0, 0, sy, ty, 400));
         this.run();
       }
     }
@@ -195,9 +195,9 @@ class SwapQueue {
 }
 
 class SwapOperation {
-  constructor(tile, adjacenttile, sx, tx, sy, ty, duration = 400) {
+  constructor(tile, adjacentTile, sx, tx, sy, ty, duration = 400) {
     this.tile = tile;
-    this.adjacenttile = adjacenttile;
+    this.adjacentTile = adjacentTile;
     this.sx = sx;
     this.tx = tx;
     this.sy = sy;
@@ -205,8 +205,8 @@ class SwapOperation {
     this.duration = duration;
   }
 
-  matches(tile, adjacenttile) {
-    return this.tile === tile && this.adjacenttile === adjacenttile;
+  matches(tile, adjacentTile) {
+    return this.tile === tile && this.adjacentTile === adjacentTile;
   }
 
   cancel(next) {
@@ -425,7 +425,7 @@ export default class Board extends THREE.Object3D {
     return intersections[0].object;
   }
 
-  adjacenttile(tile, sx, sy) {
+  adjacentTile(tile, sx, sy) {
     let i = this.tiles.indexOf(tile);
 
     if(sx < 0) {

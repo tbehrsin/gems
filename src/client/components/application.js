@@ -8,7 +8,6 @@ import Grass from '../images/graddlight-big.jpg'
 import './application.less';
 
 import Board from './board';
-import SkyBox from './skybox';
 import Tween from '../tween';
 import Levels from '../levels';
 
@@ -39,11 +38,13 @@ export default class Application {
 
 
 
-    this.renderer = new $3.WebGLRenderer({ alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.shadowMap.enabled = true;
 
-    this.camera = new $3.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 2, 1000);
+    this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 2, 1000);
 
     window.onresize = () => {
       this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -54,8 +55,7 @@ export default class Application {
     this.camera.position.y = 0;
     this.camera.position.z = 30;
 
-    this.scene = new $3.Scene();
-
+    this.scene = new THREE.Scene();
 
 
    /* var skyBoxGeometry = new $3.CubeGeometry( 10000, 10000, 10000 );
@@ -63,13 +63,14 @@ export default class Application {
     var skyBox = new $3.Mesh( skyBoxGeometry, skyBoxMaterial );
     this.scene.add(skyBox);*/
 
-    this.scene.add(SkyBox.LostValley);
+    //this.scene.add(SkyBox.LostValley);
 
 
 
     this.levels = Levels;
     this.levels.camera = this.camera;
     this.scene.add(this.levels);
+
   }
 
   animate() {
@@ -99,7 +100,9 @@ export default class Application {
   }
 
   render(renderer, scene, camera) {
+
     this.levels.render(renderer, scene, camera);
     this.renderer.render(scene, camera);
   }
 }
+

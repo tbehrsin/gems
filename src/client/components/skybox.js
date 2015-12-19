@@ -29,7 +29,7 @@ export default class SkyBox extends THREE.Mesh {
     let uniforms = THREE.UniformsUtils.clone(shader.uniforms);
     uniforms['tCube'].value = texture;
 
-    let geometry = new THREE.CubeGeometry( 100, 100, 100 );
+    let geometry = SkyBox.Geometry;
     let material = new THREE.ShaderMaterial({
       fragmentShader: shader.fragmentShader,
       vertexShader: shader.vertexShader,
