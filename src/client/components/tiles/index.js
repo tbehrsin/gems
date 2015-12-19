@@ -36,7 +36,7 @@ export class PurpleGem extends Gem {
   static Probability = 0.125;
 
   constructor() {
-    super('purple-gem', 0x8800ff, 8, PurpleGem.Probability);
+    super('purple-gem', 0xff00ff, 8, PurpleGem.Probability);
   }
 }
 

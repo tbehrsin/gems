@@ -16,7 +16,7 @@ export default () => {
 
   let level = new Level();
 
-  level.add(new THREE.AmbientLight(0xffffff));
+  level.add(new THREE.AmbientLight(0xaaaaaa, 4));
 
   let lights = new THREE.Object3D();
 
@@ -41,10 +41,12 @@ export default () => {
   light.lookAt(-10, 10, -20);
   level.add(light);
 
-  var light = new THREE.DirectionalLight(0xffffff, 5);
-  light.position.set(0, 100, -100);
-  light.lookAt(0, -100, 40);
-  level.add(light);
+
+  var spotLight = new THREE.SpotLight( 0xffffff, 10, 100, Math.PI/2 );
+  spotLight.position.set( 0, 10, 10 );
+  spotLight.lookAt(0, 0, -40);
+
+  level.add( spotLight );
 
   level.add(lights);
 
@@ -81,6 +83,21 @@ export default () => {
 
   level.scene(function() {
     this.add(SkyBox.LostValley);
+
+    let plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 4, 4), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BothSides}));
+    plane.position.set(0, 0, 40);
+    this.add(plane);
+
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 4, 4), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BothSides}));
+    plane.position.set(0, 0, 40);
+    plane.rotateY(Math.PI/3);
+    this.add(plane);
+
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 4, 4), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BothSides}));
+    plane.position.set(0, 0, 40);
+    plane.rotateY(-Math.PI/3);
+    this.add(plane);
+
     let g_planet1 = new THREE.SphereGeometry(500, 128, 128);
     let m_planet1 = new THREE.MeshPhongMaterial({ color: 0xffff00, specular: 0x444444, shininess: 10, map: THREE.ImageUtils.loadTexture(YellowGasGiant) });
     let planet1 = new THREE.Mesh(g_planet1, m_planet1);

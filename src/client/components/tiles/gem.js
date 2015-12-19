@@ -16,6 +16,7 @@ export default class Gem extends Tile {
     super(Gem.Geometry, new THREE.MeshPhongMaterial({
       color      :  new THREE.Color(color),
       specular: new THREE.Color(0x444444),
+      emissive: new THREE.Color(0xffffff),
       bumpMap: Gem.BumpMap,
       shading: THREE.SmoothShading,
       bumpScale: 0.05,
