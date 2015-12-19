@@ -1,22 +1,23 @@
 
 import THREE from 'three';
 
-import LostValleyLeft from '../images/skybox_03.jpg';
-import LostValleyRight from '../images/skybox_01.jpg';
-import LostValleyTop from '../images/skybox_04.jpg';
+import LostValleyLeft from '../images/skybox_01.jpg';
+import LostValleyRight from '../images/skybox_02.jpg';
+import LostValleyTop from '../images/skybox_03.jpg';
 import LostValleyFront from '../images/skybox_04.jpg';
-import LostValleyBack from '../images/skybox_02.jpg';
+import LostValleyBack from '../images/skybox_05.jpg';
+import LostValleyBottom from '../images/skybox_06.jpg';
 
 
 export default class SkyBox extends THREE.Mesh {
-  static Geometry = new THREE.CubeGeometry( 100000, 100000, 100000 );
+  static Geometry = new THREE.CubeGeometry( 5000, 5000, 5000 );
 
   static get LostValley() {
     return new SkyBox([
       LostValleyRight,
       LostValleyLeft,
       LostValleyTop,
-      LostValleyBack,
+      LostValleyBottom,
       LostValleyFront,
       LostValleyBack
     ]);

@@ -16,7 +16,7 @@ export default () => {
 
   let level = new Level();
 
-  level.add(new THREE.AmbientLight(0x444444));
+  level.add(new THREE.AmbientLight(0xffffff));
 
   let lights = new THREE.Object3D();
 
@@ -39,7 +39,11 @@ export default () => {
   var light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(10, 10, 20);
   light.lookAt(-10, 10, -20);
-  //lights.add(light);
+  level.add(light);
+
+  var light = new THREE.DirectionalLight(0xffffff, 5);
+  light.position.set(0, 100, -100);
+  light.lookAt(0, -100, 40);
   level.add(light);
 
   level.add(lights);
@@ -150,7 +154,7 @@ export default () => {
 
     this.update(0);
 
-    this.fog = new THREE.Fog( 0x000000, 250, 550 );
+    this.fog = new THREE.Fog( new THREE.Color(16/255,20/255,31/255), 250, 550 );
 
 
   });

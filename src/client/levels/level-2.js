@@ -2,7 +2,7 @@
 import THREE from 'three';
 import Level from './level';
 import Board from '../components/board';
-
+import SkyBox from '../components/skybox';
 
 export default () => {
   let level = new Level();
@@ -38,6 +38,11 @@ export default () => {
     lights.rotateZ(Math.PI * 2 * delta / 10);
   });
 
+  level.scene(function() {
+
+    this.add(SkyBox.LostValley);
+
+  });
 
   let checkGroups = (self, maxGroups) => {
     let groups = 0;

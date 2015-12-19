@@ -44,7 +44,7 @@ export default class Application {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
 
-    this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 2, 1000);
+    this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 2, 10000);
 
     window.onresize = () => {
       this.renderer.setSize(window.innerWidth, window.innerHeight);
