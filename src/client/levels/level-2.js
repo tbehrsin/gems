@@ -20,6 +20,8 @@ export default (tween) => {
   let StucciBumpMap = new THREE.ImageUtils.loadTexture(RockBump);
   StucciMap.wrapS = StucciMap.wrapT = THREE.MirroredRepeatWrapping;
   StucciMap.repeat.set( 10, 10 );
+  StucciBumpMap.wrapS = StucciBumpMap.wrapT = THREE.MirroredRepeatWrapping;
+  StucciBumpMap.repeat.set( 10, 10 );
 
   let level = new Level(tween);
 
@@ -83,12 +85,12 @@ export default (tween) => {
 
     let stucciMaterial = new THREE.MeshPhongMaterial({
       map: StucciMap,
-      diffuse: new THREE.Color(0x000000),
+      diffuse: new THREE.Color(0xffffff),
       specular: new THREE.Color(0x111111),
       emissive: new THREE.Color(0x000000),
       bumpMap: StucciBumpMap,
       bumpScale: 1,
-      shininess: 10,
+      shininess: 1,
       side: THREE.BackSide
     });
 
