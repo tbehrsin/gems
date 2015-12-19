@@ -146,3 +146,7 @@ export function NextGemOrDiamond() {
 export function NextGemDiamondOrNugget() {
   return NextTiles(BlueGem, YellowGem, GreenGem, PurpleGem, OrangeDiamond, CyanDiamond, GreenDiamond, PinkDiamond, GlassNugget, BronzeNugget, SilverNugget, GoldNugget, LavaNugget, NuclearNugget);
 }
+
+export function NextNugget() {
+  return NextTiles(GlassNugget, BronzeNugget, SilverNugget, GoldNugget, LavaNugget, NuclearNugget);
+}
