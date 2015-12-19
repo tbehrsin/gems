@@ -20,7 +20,7 @@ export default class Gem extends Tile {
       bumpMap: Gem.BumpMap,
       shading: THREE.SmoothShading,
       bumpScale: 0.05,
-      shininess: 45,
+      shininess: 15,
       metal: false,
       envMap:  Gem.EnvMap,
       transparency: true
