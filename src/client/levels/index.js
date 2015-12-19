@@ -134,9 +134,10 @@ export default new class Levels extends THREE.Object3D {
   }
 
   next() {
-    this.activeLevel = new this.levels[++this.levelIndex]();
+    this.activeLevel = new (this.levels[++this.levelIndex])(this.tween);
 
     this.activeLevel.addEventListener('complete', () => {
+      this.activeLevel.dispatchEvent({ type: 'destroy' });
       this.remove(this.activeLevel);
       this.next();
     });
@@ -182,7 +183,7 @@ export default new class Levels extends THREE.Object3D {
   }
 
   update(delta) {
-    this.activeLevel.update(delta);
+    if(this.activeLevel) this.activeLevel.update(delta);
     this.score.update(delta);
     this.tween.update(delta);
   }

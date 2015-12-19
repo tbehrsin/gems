@@ -9,12 +9,12 @@ import Europa from '../images/Moon.jpg';
 import EuropaBump from '../images/Moon2-Bump.jpg';
 import GlowShader from '../shaders/glow';
 import SkyBox from '../components/skybox';
-export default () => {
+export default (tween) => {
 
   let audio = new Audio(CrystalDropFall);
   audio.play();
 
-  let level = new Level();
+  let level = new Level(tween);
 
   level.add(new THREE.AmbientLight(0xaaaaaa, 4));
 
@@ -54,6 +54,13 @@ export default () => {
     lights.rotateZ(Math.PI * 2 * delta / 10);
   });
 
+  level.addEventListener('destroy', () => {
+    level.tween.add('ease-in-out', 2500, (t) => {
+      audio.volume = 1 - t;
+    }, () => {
+      audio.stop();
+    });
+  });
 
   let checkGroups = (self, maxGroups) => {
     let groups = 0;

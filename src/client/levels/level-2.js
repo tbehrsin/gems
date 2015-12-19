@@ -10,7 +10,7 @@ import GemBump from '../images/11376-bump.jpg';
 import LyvoVice from '../sounds/music-lyvo-vice.mp3';
 import { GlassNugget } from '../components/tiles';
 
-export default () => {
+export default (tween) => {
 
   let audio = new Audio(LyvoVice);
   audio.play();
@@ -21,7 +21,7 @@ export default () => {
   StucciMap.wrapS = StucciMap.wrapT = THREE.MirroredRepeatWrapping;
   StucciMap.repeat.set( 10, 10 );
 
-  let level = new Level();
+  let level = new Level(tween);
 
   level.add(new THREE.AmbientLight(0x444444));
 
@@ -52,6 +52,14 @@ export default () => {
 
   level.update(delta => {
     lights.rotateZ(Math.PI * 2 * delta / 10);
+  });
+
+  level.addEventListener('destroy', () => {
+    level.tween.add('ease-in-out', 2500, (t) => {
+      audio.volume = 1 - t;
+    }, () => {
+      audio.stop();
+    });
   });
 
   level.scene(function() {

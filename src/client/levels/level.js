@@ -6,7 +6,7 @@ import ProgressBar from '../components/progress';
 
 export default class Level extends THREE.Object3D {
 
-  constructor() {
+  constructor(tween) {
     super();
     this.scenes = [];
     this.stages = [];
@@ -14,7 +14,7 @@ export default class Level extends THREE.Object3D {
     this.activeStage = null;
     this.previousStage = null;
     this.updaters = [];
-    this.tween = new Tween();
+    this.tween = tween;
 
     this.progress = new ProgressBar(5, 1, 1, 0, 1, 0, 'STAGE');
     this.progress.position.set(-12.75, 6, 0);
