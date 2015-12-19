@@ -13,6 +13,6 @@ export default {
 
   uniforms: {
     "texture": { type: "t", value: 0, texture: null },
-    "delta": { type: "v2", value: new THREE.Vector2(1, 1) }
+    "delta": { type: "v2", value: new THREE.Vector2(0.0001, 0.0001) }
   }
 };

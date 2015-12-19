@@ -14,7 +14,7 @@ export default {
     "tDiffuse": 		{ type: "t", value: 0, texture: null },
     "screenWidth": 		{ type: "f", value: 1024 },
     "screenHeight": 	{ type: "f", value: 1024 },
-    "sampleDistance": 	{ type: "f", value: 0.94 },
-    "waveFactor": 		{ type: "f", value: 0.00125 }
+    "sampleDistance": 	{ type: "f", value: 0.05 },
+    "waveFactor": 		{ type: "f", value: 0.0025 }
   }
 };

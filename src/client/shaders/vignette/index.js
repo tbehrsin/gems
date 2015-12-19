@@ -12,7 +12,7 @@ export default {
 
   uniforms: {
     tDiffuse: { type: "t", value: 0, texture: null },
-    offset:   { type: "f", value: 1.0 },
-    darkness: { type: "f", value: 1.0 }
+    offset:   { type: "f", value: 1 },
+    darkness: { type: "f", value: 1.25 }
   }
 };

@@ -11,6 +11,13 @@ import Board from './board';
 import Tween from '../tween';
 import Levels from '../levels';
 
+import _EffectComposer from 'three-effectcomposer';
+let EffectComposer = _EffectComposer(THREE);
+
+import FilmShader from '../shaders/film';
+import VignetteShader from '../shaders/vignette';
+import FxaaShader from '../shaders/fxaa';
+
 /*let body = document.querySelector('body');
 if('onmousedown' in window) {
   var eventTargets = [window];
@@ -71,6 +78,25 @@ export default class Application {
     this.levels.camera = this.camera;
     this.scene.add(this.levels);
 
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.setSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+    this.composer.addPass(new EffectComposer.RenderPass(this.scene, this.camera));
+
+    this.vignette = new EffectComposer.ShaderPass(VignetteShader);
+    this.composer.addPass(this.vignette);
+
+    this.film = new EffectComposer.ShaderPass(FilmShader);
+    this.composer.addPass(this.film);
+
+    this.fxaa = new EffectComposer.ShaderPass(FxaaShader);
+    this.composer.addPass(this.fxaa);
+
+    //this.composer.addPass(new FilmShader.ShaderPass(EffectComposer, this.scene, this.camera, 0, 0, 0, false));
+    //let vignette = new EffectComposer.ShaderPass(VignetteShader);
+    //vignette.uniforms.
+    //this.composer.addPass(vignette);
+
+    this.composer.passes[this.composer.passes.length - 1].renderToScreen = true;
   }
 
   animate() {
@@ -94,7 +120,9 @@ export default class Application {
 
   update(delta) {
     this.camera.updateProjectionMatrix();
-
+    this.fxaa.uniforms.resolution.value = new THREE.Vector2(1 / (window.innerWidth * window.devicePixelRatio), 1 / (window.innerHeight * window.devicePixelRatio));
+    this.film.uniforms.sCount.value = window.innerHeight * window.devicePixelRatio / 2;
+    this.film.uniforms.time.value += delta;
     this.levels.update(delta);
     //this.boards.forEach(board => board.update(delta));
   }
@@ -102,7 +130,8 @@ export default class Application {
   render(renderer, scene, camera) {
 
     this.levels.render(renderer, scene, camera);
-    this.renderer.render(scene, camera);
+    //this.renderer.render(scene, camera);
+    this.composer.render();
   }
 }
 
