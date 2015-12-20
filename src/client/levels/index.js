@@ -45,14 +45,6 @@ export default new class Levels extends THREE.Object3D {
       window.dispatchEvent(new MouseEvent('mouseup', { }));
     })
 
-
-    window.addEventListener('resize', (evt) => {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-      this.animate();
-    }, false);
-
     window.addEventListener('mousedown', (evt) => {
       evt.camera = this.camera;
       if(this.activeLevel) this.activeLevel.onMouseDown(evt);

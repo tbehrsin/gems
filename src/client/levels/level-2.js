@@ -12,7 +12,11 @@ import { GlassNugget } from '../components/tiles';
 
 export default (tween) => {
 
+  let stopPlaying = false;
   let audio = new Audio(LyvoVice);
+  audio.addEventListener('ended', () => {
+    if(!stopPlaying) audio.play();
+  });
   audio.play();
 
   let StucciGeometry = new THREE.JSONLoader().parse(Stucci).geometry;
@@ -60,6 +64,7 @@ export default (tween) => {
     level.tween.add('ease-in-out', 2500, (t) => {
       audio.volume = 1 - t;
     }, () => {
+      stopPlaying = true;
       audio.stop();
     });
   });

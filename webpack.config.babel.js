@@ -17,7 +17,8 @@ class DefaultWebpackConfig {
 
   configurePaths() {
     this.entry = {
-      'client': path.resolve(__dirname, 'src', 'client')
+      'client': path.resolve(__dirname, 'src', 'client'),
+      'loader': path.resolve(__dirname, 'src', 'loader')
     };
 
     this.output = {

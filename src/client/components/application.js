@@ -54,9 +54,12 @@ export default class Application {
     this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 2, 10000);
 
     window.onresize = () => {
+      if(window.innerWidth < 1 && window.innerHeight < 1) return;
       this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.composer.setSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
+      this.render(this.renderer, this.scene, this.camera);
     };
 
     this.camera.position.y = 0;

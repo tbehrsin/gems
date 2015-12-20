@@ -20,7 +20,7 @@ export default class Gem extends Tile {
       bumpMap: Gem.BumpMap,
       shading: THREE.SmoothShading,
       bumpScale: 0.05,
-      shininess: 15,
+      shininess: 1,
       metal: false,
       envMap:  Gem.EnvMap,
       transparency: true
@@ -29,15 +29,5 @@ export default class Gem extends Tile {
     this.multiplier = multiplier;
     this.probability = probability;
   }
-
 };
 
-
-Gem.Geometry.computeVertexNormals();
-//Gem.Geometry.computeFaceNormals();
-
-Gem.BumpMap.anisotropy = 4;
-Gem.BumpMap.repeat.set( 0.998, 0.998 );
-Gem.BumpMap.offset.set( 0.001, 0.001 )
-Gem.BumpMap.wrapS = Gem.BumpMap.wrapT = THREE.RepeatWrapping;
-Gem.BumpMap.format = THREE.RGBFormat;
