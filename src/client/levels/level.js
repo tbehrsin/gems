@@ -202,6 +202,7 @@ export default class Level extends THREE.Object3D {
 
   onMouseDown = (evt) => {
     if(!this.activeStage) return;
+    if(this.activeStage.board.validating) return;
     let camera = evt.camera;
 
     let mouse = {
@@ -211,10 +212,11 @@ export default class Level extends THREE.Object3D {
     let startGem = this.activeStage.board.hitTest(camera, mouse.x, mouse.y);
     if(!startGem) return;
 
-    let gemCoords = new THREE.Vector3(startGem.position.x, startGem.position.y, 0);
+    let scale = this.activeStage.board.scale.x;
+    let gemCoords = new THREE.Vector3(startGem.position.x, startGem.position.y, 0).multiplyScalar(scale);
 
     var tweening = this.tween.add('ease-in-out', 150, (delta) => {
-      startGem.position.z = delta;
+      startGem.position.z = delta * scale;
     }, () => {
 
     });
@@ -228,24 +230,32 @@ export default class Level extends THREE.Object3D {
       let sx = Math.sign(mouseMove.x - mouse.x);
       let sy = Math.sign(mouseMove.y - mouse.y);
 
-      var v1 = new THREE.Vector3(mouse.x, 0, 1);
+      var v1 = new THREE.Vector3(mouse.x, mouse.y, 0.5);
       v1.unproject(camera);
-      var v2 = new THREE.Vector3(mouseMove.x, 0, 1);
+      v1.sub(camera.position).normalize();
+      v1 = camera.position.clone().add(v1.multiplyScalar((scale - camera.position.z) / v1.z));
+
+      var v2 = new THREE.Vector3(mouseMove.x, mouseMove.y, 0.5);
       v2.unproject(camera);
+      v2.sub(camera.position).normalize();
+      v2 = camera.position.clone().add(v2.multiplyScalar((scale - camera.position.z) / v2.z));
 
-      var v3 = new THREE.Vector3(0, mouse.y, 1);
-      v3.unproject(camera);
-      var v4 = new THREE.Vector3(0, mouseMove.y, 1);
-      v4.unproject(camera);
+      let px = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      let ox = px.projectPoint(new THREE.Vector3(gemCoords.x + sx * scale, gemCoords.y, 0));
+      let v1x = px.projectPoint(v1.clone()).sub(ox);
+      let v2x = px.projectPoint(v2.clone()).sub(v1x).sub(ox);
+      let tx1 = sx * Math.atan(v1x.x, v1x.z);
+      let tx2 = sx * Math.atan(v2x.x, v2x.z);
 
-      let oppx = v2.distanceTo(v1);
-      let adjx = camera.position.distanceTo(new THREE.Vector3(gemCoords.x + sx, gemCoords.y, 0));
-      let oppy = v4.distanceTo(v3);
-      let adjy = camera.position.distanceTo(new THREE.Vector3(gemCoords.x, gemCoords.y + sy, 0));
+      let py = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0);
+      let oy = py.projectPoint(new THREE.Vector3(gemCoords.x, gemCoords.y + sy * scale + scale / 2, 0));
+      let v1y = py.projectPoint(v1.clone()).sub(oy);
+      let v2y = py.projectPoint(v2.clone()).sub(v1y).sub(oy);
+      let ty1 = sy * Math.atan(v1y.y, v1y.z);
+      let ty2 = sy * Math.atan(v2y.y, v2y.z);
 
-      let tx = Math.min(Math.PI, Math.max(0, oppx / adjx));
-      let ty = Math.min(Math.PI, Math.max(0, oppy / adjy));
-
+      let tx = ((tx2 - tx1) - Math.PI / 4) / 0.5;
+      let ty = ((ty2 - ty1) - Math.PI / 4) / 0.5;
       this.activeStage.board.swapQueue.add(startGem, sx, tx, sy, ty);
     };
 

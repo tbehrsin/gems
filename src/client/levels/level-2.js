@@ -184,7 +184,7 @@ export default (tween) => {
   });
 
   level.stage(function () {
-    this.board = new Board(20, 20);
+    this.board = new Board(10, 10);
     checkGroups(this, 200);
   });
 
