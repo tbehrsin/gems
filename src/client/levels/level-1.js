@@ -213,7 +213,7 @@ level(0, function() {
     checkGroups(this, 5);
   });
 
-  /*this.stage(function () {
+  this.stage(function () {
     this.board = new Board(5, 5, () => new (NextGemOrDiamond()));
 
     checkGroups(this, 10);
@@ -275,6 +275,6 @@ level(0, function() {
     this.board = new Board(10, 10, () => new (NextGemDiamondOrNugget()));
 
     checkGroups(this, 25);
-  });*/
+  });
 
 });
