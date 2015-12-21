@@ -5,6 +5,7 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { ProvidePlugin } from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { sync as globSync } from 'glob';
 
 class DefaultWebpackConfig {
   constructor() {
@@ -20,6 +21,11 @@ class DefaultWebpackConfig {
       'client': path.resolve(__dirname, 'src', 'client'),
       'loader': path.resolve(__dirname, 'src', 'loader')
     };
+
+    globSync(path.resolve(__dirname, 'src', 'client', 'levels', 'level-*.js')).forEach(p => {
+      let name = path.basename(p, '.js');
+      this.entry[name] = p;
+    });
 
     this.output = {
       path: path.resolve(__dirname, 'dist'),

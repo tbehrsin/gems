@@ -22,8 +22,7 @@ export default class Gem extends Tile {
       bumpScale: 0.05,
       shininess: 1,
       metal: false,
-      envMap:  Gem.EnvMap,
-      transparency: true
+      envMap:  Gem.EnvMap
     }));
     this.type = type;
     this.multiplier = multiplier;

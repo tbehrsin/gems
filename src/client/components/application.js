@@ -18,6 +18,8 @@ import FilmShader from '../shaders/film';
 import VignetteShader from '../shaders/vignette';
 import FxaaShader from '../shaders/fxaa';
 
+import SkyBox from './skybox';
+
 /*let body = document.querySelector('body');
 if('onmousedown' in window) {
   var eventTargets = [window];
@@ -45,7 +47,7 @@ export default class Application {
 
 
 
-    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -68,16 +70,17 @@ export default class Application {
     this.scene = new THREE.Scene();
 
 
-   /* var skyBoxGeometry = new $3.CubeGeometry( 10000, 10000, 10000 );
-    var skyBoxMaterial = new $3.MeshBasicMaterial( { color: 0, side: $3.BackSide } );
-    var skyBox = new $3.Mesh( skyBoxGeometry, skyBoxMaterial );
-    this.scene.add(skyBox);*/
+    /* var skyBoxGeometry = new $3.CubeGeometry( 10000, 10000, 10000 );
+     var skyBoxMaterial = new $3.MeshBasicMaterial( { color: 0, side: $3.BackSide } );
+     var skyBox = new $3.Mesh( skyBoxGeometry, skyBoxMaterial );
+     this.scene.add(skyBox);*/
 
     //this.scene.add(SkyBox.LostValley);
 
 
 
     this.levels = Levels;
+    this.levels.scene = this.scene;
     this.levels.camera = this.camera;
     this.scene.add(this.levels);
 

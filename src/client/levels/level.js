@@ -3,24 +3,27 @@ import THREE from 'three';
 import Tween from '../tween';
 import TextGeometry from '../components/text';
 import ProgressBar from '../components/progress';
+import SkyBox from '../components/skybox';
 
 export default class Level extends THREE.Object3D {
 
-  constructor(tween) {
+  constructor(tween, scene) {
     super();
+
+    this.tween = tween;
+    this.globalScene = scene;
+
     this.scenes = [];
     this.stages = [];
     this.stageIndex = -1;
     this.activeStage = null;
     this.previousStage = null;
     this.updaters = [];
-    this.tween = tween;
 
     this.progress = new ProgressBar(5, 1, 1, 0, 1, 0, 'STAGE');
     this.progress.position.set(-12.75, 6, 0);
     this.progress.visible = false;
     this.add(this.progress);
-
     this.lock = false;
   }
 
@@ -29,12 +32,20 @@ export default class Level extends THREE.Object3D {
   }
 
   scene(scope) {
+    let self = this;
+
     let scene = function() {
-      THREE.Object3D.apply(this, arguments);
+      THREE.Object3D.call(this);
       this.tween = new Tween();
-      scope.call(this);
+      this.lights = new THREE.Object3D();
+      this.add(this.lights);
+      scope.apply(this, arguments);
+
+      if(this.skyBox) {
+        this.add(new SkyBox(this.skyBox));
+      }
     };
-    scene.prototype = Object.create(THREE.Scene.prototype);
+    scene.prototype = Object.create(THREE.Object3D.prototype);
     this.scenes.push(scene);
   }
 
@@ -42,16 +53,22 @@ export default class Level extends THREE.Object3D {
     this.stages.push(scope);
   }
 
+  loadScene() {
+    if(!this.activeScene) {
+      this.activeScene = new this.scenes[0](THREE);
+      this.add(this.activeScene);
+      this.globalScene.traverse(o => {
+        if(o.material) o.material.needsUpdate = true;
+      });
+    }
+  }
+
   next(next) {
     if(this.lock) return next && next(false);
     this.lock = true;
 
     var pending = 0;
-
-    if(!this.activeScene) {
-      this.activeScene = new this.scenes[0]();
-      this.add(this.activeScene);
-    }
+    //this.loadScene();
 
     if(this.stageProgress) this.stageProgress.visible = false;
     this.previousStage = this.activeStage;
@@ -287,3 +304,5 @@ export default class Level extends THREE.Object3D {
     }
   }
 };
+
+window.Level = Level;

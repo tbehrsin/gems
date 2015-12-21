@@ -1,65 +1,46 @@
 
-import THREE from 'three';
-import Level from './level';
-import Board from '../components/board';
+import DeepSpaceLeft from '../images/deep-space-1.jpg';
+import DeepSpaceRight from '../images/deep-space-2.jpg';
+import DeepSpaceTop from '../images/deep-space-3.jpg';
+import DeepSpaceFront from '../images/deep-space-4.jpg';
+import DeepSpaceBack from '../images/deep-space-5.jpg';
+import DeepSpaceBottom from '../images/deep-space-6.jpg';
+
 import CrystalDropFall from '../sounds/music-crystal-drop-fall.mp3';
-import { NextGem, NextTiles, NextGemOrDiamond, NextGemDiamondOrNugget, GlassNugget, PinkDiamond, CyanDiamond, BlueGem, YellowGem, GreenGem, PurpleGem, GreenDiamond } from '../components/tiles';
 import YellowGasGiant from '../images/gas-giant-yellow.jpg';
 import Europa from '../images/Moon.jpg';
 import EuropaBump from '../images/Moon2-Bump.jpg';
 import GlowShader from '../shaders/glow';
-import SkyBox from '../components/skybox';
-export default (tween) => {
+
+loadTextures({
+  SkyBox: [
+    DeepSpaceRight,
+    DeepSpaceLeft,
+    DeepSpaceTop,
+    DeepSpaceBottom,
+    DeepSpaceFront,
+    DeepSpaceBack
+  ],
+  YellowGasGiant: YellowGasGiant,
+  Europa: Europa,
+  EuropaBump: EuropaBump
+});
+
+loadMusic({
+  CrystalDropFall: CrystalDropFall
+});
+
+level(0, function() {
 
   let stopPlaying = false;
-  let audio = new Audio(CrystalDropFall);
+  let audio = music.CrystalDropFall;
   audio.addEventListener('ended', () => {
     if(!stopPlaying) audio.play();
   });
   audio.play();
 
-  let level = new Level(tween);
-
-  level.add(new THREE.AmbientLight(0xaaaaaa, 4));
-
-  let lights = new THREE.Object3D();
-
-  var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
-  pointLight.position.set( -15, -15, 5 );
-  lights.add( pointLight );
-
-  var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
-  pointLight.position.set( 15, 15, 5 );
-  lights.add( pointLight );
-
-  var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
-  pointLight.position.set( -15, 15, 5 );
-  lights.add( pointLight );
-
-  var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
-  pointLight.position.set( 15, -15, 5 );
-  lights.add( pointLight );
-
-  var light = new THREE.DirectionalLight(0xffffff, 0.5);
-  light.position.set(10, 10, 20);
-  light.lookAt(-10, 10, -20);
-  level.add(light);
-
-
-  var spotLight = new THREE.SpotLight( 0xffffff, 10, 100, Math.PI/2 );
-  spotLight.position.set( 0, 10, 10 );
-  spotLight.lookAt(0, 0, -40);
-
-  level.add( spotLight );
-
-  level.add(lights);
-
-  level.update(delta => {
-    lights.rotateZ(Math.PI * 2 * delta / 10);
-  });
-
-  level.addEventListener('destroy', () => {
-    level.tween.add('ease-in-out', 2500, (t) => {
+  this.addEventListener('destroy', () => {
+    this.tween.add('ease-in-out', 2500, (t) => {
       audio.volume = 1 - t;
     }, () => {
       stopPlaying = true;
@@ -86,15 +67,45 @@ export default (tween) => {
       }
 
       self.progress.value = Math.min(groups, maxGroups);
-      level.score.addScore(evt.group);
+      this.score.addScore(evt.group);
       if(groups >= maxGroups) self.board.addEventListener('validated', (evt) => {
-        level.next();
+        this.next();
       });
     });
   };
 
-  level.scene(function() {
-    this.add(SkyBox.LostValley);
+  this.scene(function(THREE) {
+
+
+    this.add(new THREE.AmbientLight(0xaaaaaa, 4));
+
+    var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
+    pointLight.position.set( -15, -15, 5 );
+    this.lights.add( pointLight );
+
+    var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
+    pointLight.position.set( 15, 15, 5 );
+    this.lights.add( pointLight );
+
+    var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
+    pointLight.position.set( -15, 15, 5 );
+    this.lights.add( pointLight );
+
+    var pointLight = new THREE.PointLight( 0xffffff, 1, 50 );
+    pointLight.position.set( 15, -15, 5 );
+    this.lights.add( pointLight );
+
+    var light = new THREE.DirectionalLight(0xffffff, 0.5);
+    light.position.set(10, 10, 20);
+    light.lookAt(-10, 10, -20);
+    this.add(light);
+
+    var spotLight = new THREE.SpotLight( 0xffffff, 10, 100, Math.PI/2 );
+    spotLight.position.set( 0, 10, 10 );
+    spotLight.lookAt(0, 0, -40);
+    this.add(spotLight);
+
+    this.skyBox = textures.SkyBox;
 
     let plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 4, 4), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BothSides}));
     plane.position.set(0, 0, 40);
@@ -111,7 +122,7 @@ export default (tween) => {
     this.add(plane);
 
     let g_planet1 = new THREE.SphereGeometry(500, 128, 128);
-    let m_planet1 = new THREE.MeshPhongMaterial({ color: 0xffff00, specular: 0x444444, shininess: 10, map: THREE.ImageUtils.loadTexture(YellowGasGiant) });
+    let m_planet1 = new THREE.MeshPhongMaterial({ color: 0xffff00, specular: 0x444444, shininess: 10, map: textures.YellowGasGiant });
     let planet1 = new THREE.Mesh(g_planet1, m_planet1);
     planet1.position.set(-500, -250, -500);
     this.add(planet1);
@@ -136,7 +147,7 @@ export default (tween) => {
 
 
     let g_planet2 = new THREE.SphereGeometry(70, 128, 128);
-    let m_planet2 = new THREE.MeshPhongMaterial({ color: 0xffffff, specular: 0x444444, map: THREE.ImageUtils.loadTexture(Europa), shininess: 0.5, bumpMap: THREE.ImageUtils.loadTexture(EuropaBump), bumpScale: 0.5 });
+    let m_planet2 = new THREE.MeshPhongMaterial({ color: 0xffffff, specular: 0x444444, map: textures.Europa, shininess: 0.5, bumpMap: textures.EuropaBump, bumpScale: 0.5 });
     let planet2 = new THREE.Mesh(g_planet2, m_planet2);
     planet2.position.set(-50, -70, -200);
     this.add(planet2);
@@ -179,16 +190,17 @@ export default (tween) => {
       glowMaterial2.uniforms.viewVector.value = planet2.position.clone();
       glowMaterial2.uniforms.viewVector.value.z *= -1;
       glowMaterial2.uniforms.viewVector.value.normalize();
+
+      this.lights.rotateZ(Math.PI * 2 * delta / 10);
     };
 
     this.update(0);
 
     this.fog = new THREE.Fog( new THREE.Color(16/255,20/255,31/255), 250, 550 );
-
-
   });
 
-  level.stage(function () {
+
+  this.stage(function () {
     let nextTiles = [
       GlassNugget,   GreenGem,    BlueGem,   YellowGem,
       PurpleGem, GreenGem,    YellowGem, PurpleGem,
@@ -201,13 +213,13 @@ export default (tween) => {
     checkGroups(this, 5);
   });
 
-  level.stage(function () {
+  /*this.stage(function () {
     this.board = new Board(5, 5, () => new (NextGemOrDiamond()));
 
     checkGroups(this, 10);
   });
 
-  level.stage(function () {
+  this.stage(function () {
     let nextTiles = [
       PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond,
       CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond, CyanDiamond, PinkDiamond,
@@ -241,29 +253,28 @@ export default (tween) => {
     checkGroups(this, 15);
   });
 
-  level.stage(function () {
+  this.stage(function () {
     this.board = new Board(7, 7, () => new (NextGemOrDiamond()));
 
     checkGroups(this, 20);
   });
 
-  level.stage(function () {
+  this.stage(function () {
     this.board = new Board(8, 8, () => new (NextGemOrDiamond()));
 
     checkGroups(this, 30);
   });
 
-  level.stage(function () {
+  this.stage(function () {
     this.board = new Board(9, 9, () => new (NextGemOrDiamond()));
 
     checkGroups(this, 50);
   });
 
-  level.stage(function () {
+  this.stage(function () {
     this.board = new Board(10, 10, () => new (NextGemDiamondOrNugget()));
 
     checkGroups(this, 25);
-  });
+  });*/
 
-  return level;
-};
+});

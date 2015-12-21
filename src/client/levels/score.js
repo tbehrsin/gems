@@ -21,7 +21,7 @@ export default class Score extends THREE.Object3D {
       bevelThickness: 0.1,
       bevelSize: 0.1
     };
-    var scoreMaterial = new THREE.MeshPhongMaterial({ color:  new THREE.Color("#663300"), shininess: 100, specular: new THREE.Color('#aaaa00') });
+    var scoreMaterial = new THREE.MeshPhongMaterial({ color:  new THREE.Color(0x663300), shininess: 100, specular: new THREE.Color(0xaaaa00) });
 
     for(var i = 0; i < 10; i++) {
       var scoreGeometry = new TextGeometry(i.toString(), scoreParams);

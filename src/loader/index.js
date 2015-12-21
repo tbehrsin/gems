@@ -21,7 +21,7 @@ class Loader extends THREE.Scene {
     this.clock = new THREE.Clock();
     this.window = window;
 
-    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setClearColor(0x000000, 1);
     this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -80,7 +80,6 @@ class Loader extends THREE.Scene {
   }
 
   load(files) {
-    this.show();
     let progress = [];
 
     let calculateProgress = () => {
@@ -127,7 +126,6 @@ class Loader extends THREE.Scene {
       files.forEach((file, i) => {
         out[file] = progress[i].xhr.responseText;
       });
-      this.hide();
       return out;
     }).catch(err => {
       console.error(err);
@@ -167,7 +165,7 @@ class Loader extends THREE.Scene {
         this.visible = false;
         this.stop = true;
       });
-    }, 2500);
+    }, 0);
   }
 
   start() {
@@ -185,7 +183,7 @@ class Loader extends THREE.Scene {
     this.tween.update(delta);
     this.light.tX += delta;
     this.light.tY += delta;
-    this.light.position.set(-60 * Math.cos(this.light.tX * Math.PI), 60 * Math.sin(this.light.tY * Math.PI), 30);
+    this.light.position.set(-60 * Math.cos(this.light.tX * Math.PI / 2), 60 * Math.sin(this.light.tY * Math.PI / 2), 30);
   }
 
   render(renderer, scene, camera) {
