@@ -29,7 +29,8 @@ class DefaultWebpackConfig {
 
     this.output = {
       path: path.resolve(__dirname, 'dist'),
-      filename: '/js/[name].js'
+      filename: 'js/[name].js',
+      publicPath: 'http://localhost:3000'
     };
   }
 
@@ -52,21 +53,21 @@ class DefaultWebpackConfig {
   configureShaderLoader() {
     return {
       test: /\.glsl$/,
-      loader: 'raw'
+      loader: 'raw-loader'
     };
   }
 
   configureJsonLoader() {
     return {
       test: /\.json$/,
-      loader: 'json'
+      loader: 'json-loader'
     };
   }
 
   configureLessLoader() {
     return {
       test: /\.less$/,
-      loader: 'style?sourceMap!css?sourceMap!less?sourceMap'
+      loader: 'style-loader?sourceMap!css-loader?sourceMap!less-loader?sourceMap'
     };
   }
 
@@ -81,11 +82,7 @@ class DefaultWebpackConfig {
     return {
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,
-      loader: path.join(__dirname, 'node_modules/babel-loader/index.js'),
-      query: {
-        stage: 0,
-        optional: ['runtime']
-      }
+      loader: 'babel-loader'
     };
   }
 
@@ -119,11 +116,17 @@ class TestWebpackConfig extends DefaultWebpackConfig {
 
 
 class DevelopmentWebpackConfig extends DefaultWebpackConfig {
-
+  constructor() {
+    super();
+    this.output.publicPath = 'http://localhost:3000';
+  }
 }
 
 class ProductionWebpackConfig extends DefaultWebpackConfig {
-
+  constructor() {
+    super();
+    this.output.publicPath = 'https://gems.github.io';
+  }
 }
 
 module.exports = new ({
