@@ -36484,7 +36484,7 @@ var Loader = /*#__PURE__*/function (_THREE$Scene) {
 
     _this.show().then(function () {
       setTimeout(function () {
-        _this.load(['/js/client.js']).then(function (files) {
+        _this.load(['js/client.js']).then(function (files) {
           for (var v in files) {
             eval(files[v]);
           }
