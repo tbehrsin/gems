@@ -40230,7 +40230,7 @@ var tiles = __webpack_require__(14);
     value: function load(level, next) {
       var _this3 = this;
 
-      window.Loader.load(['/js/level-' + (level + 1) + '.js']).then(function (files) {
+      window.Loader.load(['js/level-' + (level + 1) + '.js']).then(function (files) {
         var params = ['level', 'loadTextures', 'loadMusic', 'Level', 'textures', 'music'];
 
         for (var v in tiles) {
