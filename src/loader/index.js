@@ -191,4 +191,11 @@ class Loader extends THREE.Scene {
   }
 }
 
-window.Loader = Loader.start(window, 'main[name=loader]');
+const button = document.createElement('button');
+button.textContent = 'Start Grexie Gems';
+button.className = 'start-game-button';
+document.body.appendChild(button);
+button.addEventListener('click', () => {
+  button.remove();
+  window.Loader = Loader.start(window, 'main[name=loader]');
+}, false);
